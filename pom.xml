@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sumhr</groupId>
+    <artifactId>sumhr-demo-api</artifactId>
+    <version>1.0.0</version>
+
+    <packaging>${project.packaging}</packaging>
+
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.4.RELEASE</version>
+        <relativePath />
+    </parent>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <dependencies>
+
+        <!-- all the common dependencies goes here -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!-- <version>1.18.4</version> -->
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        
+        <!--
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>8.0.13</version>
+        </dependency>
+        -->
+
+        
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        
+
+
+
+
+    </dependencies>
+
+    <!-- create maven profiles jar,war AND dev,staging,prod -->
+
+    <profiles>
+
+        <!-- default is -Pdev,jar -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <active-profile>dev</active-profile>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>jar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <project.packaging>jar</project.packaging>
+                <project.executable>true</project.executable>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-undertow</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <!-- non default profile details -->
+        <profile>
+            <id>war</id>
+            <properties>
+                <project.packaging>war</project.packaging>
+                <project.executable>false</project.executable>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>9.4.14.v20181114</version>
+                        <configuration>
+                            <war>${project.basedir}/target/${project.artifactId}.war</war>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sandbox</id>
+            <properties>
+                <active-profile>sandbox</active-profile>
+            </properties>
+        </profile>
+        <profile>
+            <id>staging</id>
+            <properties>
+                <active-profile>staging</active-profile>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <active-profile>prod</active-profile>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <!-- ${project.build.finalName} -->
+        <finalName>${project.artifactId}</finalName>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build-info</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>${project.executable}</executable>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
